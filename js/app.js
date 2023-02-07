@@ -1,5 +1,7 @@
 // varibles
 
+let listCourses = [];
+
 // cart
 
 const cart = document.querySelector("#cart");
@@ -14,6 +16,7 @@ initPrograma();
 
 function initPrograma() {
   listCoursesContainer.addEventListener("click", addCourse);
+  checkItemsCart();
 }
 
 // functions
@@ -44,30 +47,68 @@ function readDataCourse(selectCourse) {
     amount,
   };
 
-  addSelectCourse(dataCourseSelect);
+  listCourses = [...listCourses, dataCourseSelect];
+
+  createHtml(listCourses);
 }
 
-function addSelectCourse(dataCourseSelect) {
-  const tr = document.createElement("tr");
-  const tdImagen = document.createElement("td");
-  const tdName = document.createElement("td");
-  const tdPrice = document.createElement("td");
-  const tdAmount = document.createElement("td");
-  const img = document.createElement("img");
-  img.src = dataCourseSelect.img;
-  const title = document.createElement("h4");
-  title.textContent = dataCourseSelect.title;
-  const price = document.createElement("p");
-  price.textContent = dataCourseSelect.price;
-  const amount = document.createElement("p");
-  amount.textContent = dataCourseSelect.amount;
-  tdName.appendChild(title);
-  tdPrice.appendChild(price);
-  tdAmount.appendChild(amount);
-  tr.appendChild(tdImagen).appendChild(img);
-  tr.appendChild(tdName);
-  tr.appendChild(tdPrice);
-  tr.appendChild(tdAmount);
+function createHtml(list) {
+  cleanHTML();
+  list.forEach((item) => {
+    const { img, title, price, amount, id } = item;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+       <td> <img src=${img} width="100" /></td>
+        <td> <p>${title}</p></td>
+         <td>
+         <p>${price}</p>
+         </td>
+          <td>
+         <p>${amount}</p>
+         </td>
+         <td>
+           <a href="#" class="icon-remove" data-id=${id}> x </a>
+         </td>
+    `;
 
-  cartTbodyContainer.appendChild(tr);
+    cartTbodyContainer.appendChild(tr);
+  });
+
+  checkItemsCart();
 }
+
+function cleanHTML() {
+  // slow
+  //   cartTbodyContainer.innerHTML = "";
+  // fast
+
+  while (cartTbodyContainer.firstChild) {
+    cartTbodyContainer.removeChild(cartTbodyContainer.firstChild);
+  }
+}
+
+function removeItems() {
+  cartTbodyContainer.innerHTML = "";
+  checkItemsCart();
+}
+
+function checkItemsCart() {
+  if (cartTbodyContainer.children.length === 0) {
+    buttonRemoveCart.textContent = " your dont have still courses";
+  } else {
+    buttonRemoveCart.textContent = " remove all courses";
+  }
+}
+
+function removeItem(e) {
+  if (e.target.classList.contains("icon-remove")) {
+    const anchor = e.target;
+    const id = anchor.getAttribute("data-id");
+    listCourses = listCourses.filter((el) => el.id !== id);
+    createHtml(listCourses);
+  }
+}
+
+buttonRemoveCart.addEventListener("click", removeItems);
+
+cartTbodyContainer.addEventListener("click", removeItem);
