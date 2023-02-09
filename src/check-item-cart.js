@@ -3,8 +3,8 @@ export function checkItemsCart() {
   const buttonRemoveCart = document.querySelector("#removeItems");
 
   if (cartTbodyContainer.children.length === 0) {
-    buttonRemoveCart.textContent = " your dont have still courses";
+    buttonRemoveCart.textContent = "Ihr habt noch keine Kurse";
   } else {
-    buttonRemoveCart.textContent = " remove all courses";
+    buttonRemoveCart.textContent = "alle Kurse entfernen";
   }
 }
